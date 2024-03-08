@@ -1,0 +1,1063 @@
+openapi: 3.0.0
+
+info:
+  title: Final Project Sanber Bootcamp
+  description: RSU Siaga Medika x Sanbercode
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3001
+    description: Development Server
+  - url: http://localhost:3001
+    description: Production Server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+paths:
+  # Authorization
+  /api/v1/auth/login:
+    post:
+      tags:
+        - Authorization
+      summary: Login User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: admin
+                password:
+                  type: string
+                  example: 12345678
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { token }
+        "400":
+          description: Gagal
+          content:
+            application/json: { message: "username dan password harus diisi" }
+        "401":
+          description: Gagal / Unauthorized
+          content:
+            application/json: { message: "username or password invalid" }
+
+  /api/v1/auth/me:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Authorization
+      summary: Current User
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "data berhasil ditampilkan" }
+        "500":
+          description: Gagal
+          content:
+            application/json: {}
+
+  # User
+  /api/v1/users:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      summary: Read All User
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "data berhasil ditampilkan" }
+        "500":
+          description: Gagal
+          content:
+            application/json: {}
+
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      summary: Create User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: user1
+                username:
+                  type: string
+                  example: user1
+                email:
+                  type: string
+                  example: user1@mail.com
+                password:
+                  type: string
+                  example: 12345678
+                roleId:
+                  type: integer
+                  example: 2
+      responses:
+        "201":
+          description: Sukses
+          content:
+            application/json: { message: "User berhasil dibuat", token }
+        "400":
+          description: Gagal
+          content:
+            application/json: {}
+
+  /api/v1/users/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      summary: Read User by Id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "Detail User berhasil ditemukan" }
+        "404":
+          description: Gagal
+          content:
+            application/json: {}
+
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      summary: Update User by Id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: user1edit
+                username:
+                  type: string
+                  example: user1edit
+                email:
+                  type: string
+                  example: user1edit@mail.com
+                password:
+                  type: string
+                  example: 12345678
+                roleId:
+                  type: integer
+                  example: 3
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "Data user berhasil diupdate" }
+        "400":
+          description: Gagal
+          content:
+            application/json: {}
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      summary: Delete User by Id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "Data user berhasil dihapus" }
+        "404":
+          description: Gagal
+          content:
+            application/json: {}
+
+  # Role
+  /api/v1/role:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Role
+      summary: Read All Role
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "data berhasil ditampilkan" }
+        "500":
+          description: Gagal
+          content:
+            application/json: {}
+
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Role
+      summary: Create Role
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: test-role
+      responses:
+        "201":
+          description: Sukses
+          content:
+            application/json: { message: "Role berhasil dibuat" }
+        "400":
+          description: Gagal
+          content:
+            application/json: {}
+
+  /api/v1/role/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Role
+      summary: Read Role by Id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "Detail Role berhasil ditemukan" }
+        "404":
+          description: Gagal
+          content:
+            application/json: {}
+
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - Role
+      summary: Update Role by Id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: test-role-edit
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "Data Role berhasil diupdate" }
+        "400":
+          description: Gagal
+          content:
+            application/json: {}
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - Role
+      summary: Delete Role by Id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "Data Role berhasil dihapus" }
+        "404":
+          description: Gagal
+          content:
+            application/json: {}
+
+  # Barang
+  /api/v1/barang:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Barang
+      summary: Read All Barang
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "data berhasil ditampilkan" }
+        "500":
+          description: Gagal
+          content:
+            application/json: {}
+
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Barang
+      summary: Create Barang
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                kodeBarang:
+                  type: string
+                  example: PAHE6000
+                name:
+                  type: string
+                  example: Pahe Larang
+                stock:
+                  type: integer
+                  example: 100
+                harga:
+                  type: integer
+                  example: 6000
+                description:
+                  type: text
+                  example: Menu paket hemat untuk karyawan harga 6000
+                categoryId:
+                  type: integer
+                  example: 2
+      responses:
+        "201":
+          description: Sukses
+          content:
+            application/json: { message: "Barang berhasil dibuat" }
+        "400":
+          description: Gagal
+          content:
+            application/json: {}
+
+  /api/v1/barang/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Barang
+      summary: Read Barang by Id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "Detail Barang berhasil ditemukan" }
+        "404":
+          description: Gagal
+          content:
+            application/json: {}
+
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - Barang
+      summary: Update Barang by Id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                kodeBarang:
+                  type: string
+                  example: PAHE6000-EDIT
+                name:
+                  type: string
+                  example: Pahe Larang Edit
+                stock:
+                  type: integer
+                  example: 200
+                harga:
+                  type: integer
+                  example: 5000
+                description:
+                  type: text
+                  example: Menu paket hemat untuk karyawan harga 6000 Edit
+                categoryId:
+                  type: integer
+                  example: 3
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "Data Barang berhasil diupdate" }
+        "400":
+          description: Gagal
+          content:
+            application/json: {}
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - Barang
+      summary: Delete Barang by Id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "Data Barang berhasil dihapus" }
+        "404":
+          description: Gagal
+          content:
+            application/json: {}
+
+  # Category
+  /api/v1/category:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Category
+      summary: Read All Category
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "data berhasil ditampilkan" }
+        "500":
+          description: Gagal
+          content:
+            application/json: {}
+
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Category
+      summary: Create Category
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: test-category
+      responses:
+        "201":
+          description: Sukses
+          content:
+            application/json: { message: "Category berhasil dibuat" }
+        "400":
+          description: Gagal
+          content:
+            application/json: {}
+
+  /api/v1/category/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Category
+      summary: Read Category by Id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "Detail Category berhasil ditemukan" }
+        "404":
+          description: Gagal
+          content:
+            application/json: {}
+
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - Category
+      summary: Update Category by Id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: test-category-edit
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "Data Category berhasil diupdate" }
+        "400":
+          description: Gagal
+          content:
+            application/json: {}
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - Category
+      summary: Delete Category by Id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "Data Category berhasil dihapus" }
+        "404":
+          description: Gagal
+          content:
+            application/json: {}
+
+  # Supplier
+  /api/v1/supplier:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Supplier
+      summary: Read All Supplier
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "data berhasil ditampilkan" }
+        "500":
+          description: Gagal
+          content:
+            application/json: {}
+
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Supplier
+      summary: Create Supplier
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: test-supplier
+      responses:
+        "201":
+          description: Sukses
+          content:
+            application/json: { message: "Supplier berhasil dibuat" }
+        "400":
+          description: Gagal
+          content:
+            application/json: {}
+
+  /api/v1/supplier/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Supplier
+      summary: Read Supplier by Id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "Detail Supplier berhasil ditemukan" }
+        "404":
+          description: Gagal
+          content:
+            application/json: {}
+
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - Supplier
+      summary: Update Supplier by Id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: test-supplier-edit
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "Data Supplier berhasil diupdate" }
+        "400":
+          description: Gagal
+          content:
+            application/json: {}
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - Supplier
+      summary: Delete Supplier by Id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "Data Supplier berhasil dihapus" }
+        "404":
+          description: Gagal
+          content:
+            application/json: {}
+
+  # Pembelian
+  /api/v1/pembelian:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Pembelian
+      summary: Read All Pembelian
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "data berhasil ditampilkan" }
+        "500":
+          description: Gagal
+          content:
+            application/json: {}
+
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Pembelian
+      summary: Create Pembelian
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nomorFaktur:
+                  type: integer
+                  example: 123456789
+                supplierId:
+                  type: integer
+                  example: 2
+                pembelianDetil:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      barangId:
+                        type: integer
+                      jumlah:
+                        type: integer
+                      hargaSatuan:
+                        type: integer
+                  example:
+                    - barangId: 1
+                      jumlah: 5
+                      hargaSatuan: 5000
+                    - barangId: 2
+                      jumlah: 5
+                      hargaSatuan: 6500
+                    - barangId: 3
+                      jumlah: 5
+                      hargaSatuan: 7000
+      responses:
+        "201":
+          description: Sukses
+          content:
+            application/json: { message: "Pembelian berhasil dibuat" }
+        "400":
+          description: Gagal
+          content:
+            application/json: {}
+
+  /api/v1/pembelian/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Pembelian
+      summary: Read Pembelian by Id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "Detail Pembelian berhasil ditemukan" }
+        "404":
+          description: Gagal
+          content:
+            application/json: {}
+
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - Pembelian
+      summary: Update Pembelian by Id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nomorFaktur:
+                  type: integer
+                  example: 321654987
+                supplierId:
+                  type: integer
+                  example: 2
+                pembelianDetil:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      barangId:
+                        type: integer
+                      jumlah:
+                        type: integer
+                      hargaSatuan:
+                        type: integer
+                  example:
+                    - barangId: 1
+                      jumlah: 8
+                      hargaSatuan: 5000
+                    - barangId: 2
+                      jumlah: 8
+                      hargaSatuan: 6500
+                    - barangId: 3
+                      jumlah: 8
+                      hargaSatuan: 7000
+
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "Data Pembelian berhasil diupdate" }
+        "400":
+          description: Gagal
+          content:
+            application/json: {}
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - Pembelian
+      summary: Delete Pembelian by Id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "Data Pembelian berhasil dihapus" }
+        "404":
+          description: Gagal
+          content:
+            application/json: {}
+
+  # Penjualan
+  /api/v1/penjualan:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Penjualan
+      summary: Read All Penjualan
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "data penjualan berhasil ditampilkan" }
+        "500":
+          description: Gagal
+          content:
+            application/json: {}
+
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Penjualan
+      summary: Create Penjualan
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                penjualanDetil:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      barangId:
+                        type: integer
+                      jumlah:
+                        type: integer
+                      hargaSatuan:
+                        type: integer
+                  example:
+                    - barangId: 1
+                      jumlah: 5
+                      hargaSatuan: 5000
+                    - barangId: 2
+                      jumlah: 5
+                      hargaSatuan: 6500
+                    - barangId: 3
+                      jumlah: 5
+                      hargaSatuan: 7000
+      responses:
+        "201":
+          description: Sukses
+          content:
+            application/json: { message: "Data penjualan berhasil dibuat" }
+        "400":
+          description: Gagal
+          content:
+            application/json: {}
+
+  /api/v1/penjualan/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Penjualan
+      summary: Read Penjualan by Id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "data penjualan berhasil ditampilkan" }
+        "500":
+          description: Gagal
+          content:
+            application/json: {}
+
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - Penjualan
+      summary: Update Penjualan by Id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                penjualanDetil:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      barangId:
+                        type: integer
+                      jumlah:
+                        type: integer
+                      hargaSatuan:
+                        type: integer
+                  example:
+                    - barangId: 1
+                      jumlah: 5
+                      hargaSatuan: 5000
+                    - barangId: 2
+                      jumlah: 5
+                      hargaSatuan: 6500
+                    - barangId: 3
+                      jumlah: 5
+                      hargaSatuan: 7000
+
+      responses:
+        "201":
+          description: Sukses
+          content:
+            application/json: { message: "Data Penjualan berhasil diupdate" }
+        "400":
+          description: Gagal
+          content:
+            application/json: {}
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - Penjualan
+      summary: Delete Penjualan by Id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Sukses
+          content:
+            application/json: { message: "Data Penjualan berhasil dihapus" }
+        "400":
+          description: Gagal
+          content:
+            application/json: {}
